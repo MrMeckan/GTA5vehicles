@@ -1,9 +1,42 @@
-query = `$(query)`.normalize("NFD").replace(/[\u0300-\u036f]/g, ''); 
-url = `https://docs.google.com/spreadsheets/d/1DIGQM9Vvd7ow6vqwsRQST5WogWJdPawDFf4hmB95-Ig/gviz/tq?tqx=out:csv&sheet=Vehicles&range=A:B&tq=select%20*%20where%20lower(A)%20=%20lower(%22${query}%22))`; 
-data = `$(urlfetch ${url})`; 
-if (data.startsWith('Error')) { 
-  'Error Connecting To Remote Server'; 
-} else { 
-  arr = data.replace(/['"]+/g, '').split(','); 
-  arr.length > 1 ? "https://gtacars.net/gta5/" + arr[1] : "Misspelled it LOL"; 
+function car(query = '', data = {}) {
+    query = normalize(query);
+
+    /* Find all car that match the specified track type */
+    const [carname] = parse_query(query);
+    const cars = data[carname];
+    if (cars !== Object(cars)) {
+        return 'To use this command, write !randomcar, then a space, then the class you want (single, not plural - including all/meme), or a letter (A-Z)'
+    }
+ 
+    /* Output a random car (or error message) */
+    if (cars.length > 0) {
+        const i = Math.floor(Math.random() * cars.length);
+        const car = cars[i];
+        
+        return car;
+    }
+    return 'Could not find a matching random car ¯\\_(ツ)_/¯';
+}
+
+function normalize(text) {
+    if (!text) {
+        text = '';
+    }
+
+    /* Convert to lowercase */
+    text = text.toLowerCase();
+
+    /* Remove plural (unless part of 'PS 4')*/
+    text = text.replace(/(?<=\bp)s\b(?=4)/g, '');
+
+    /* Remove accents */
+    text = text.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+
+    /* Remove everything behind '@' */
+    text = text.replace(/\s*@.*/, '');
+
+    /* Remove all chars that are not letters */
+    text = text.replace(/[^a-z0-9 ]+/g, '');
+
+    return text;
 }
