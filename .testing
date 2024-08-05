@@ -1,22 +1,8 @@
 function car(query = '', data = {}) {
     query = normalize(query);
 
-    /* Find all car that match the specified track type */
-    const [carname] = parse_query(query);
-    const cars = data[carname];
-    if (cars !== Object(cars)) {
-        return 'To use this command, write !randomcar, then a space, then the class you want (single, not plural - including all/meme), or a letter (A-Z)'
-    }
- 
-    /* Output a random car (or error message) */
-    if (cars.length > 0) {
-        const i = Math.floor(Math.random() * cars.length);
-        const car = cars[i];
-        
-        return car;
-    }
-    return 'Could not find a matching random car ¯\\_(ツ)_/¯';
-}
+    arr = data.replace(/['"]+/g, '').split(','); 
+    arr.length > 1 ? "https://gtacars.net/gta5/" + arr[1] : "Misspelled it LOL";)
 
 function normalize(text) {
     if (!text) {
